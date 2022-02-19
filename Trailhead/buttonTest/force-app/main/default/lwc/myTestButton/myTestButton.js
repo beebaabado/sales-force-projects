@@ -21,8 +21,8 @@ export default class MyTestButton extends LightningElement {
         console.log("BUTTON CLICKED");
     }
 
-    // @wire(getRecord, { recordId: '$recordId', fields: fields }) contact;
-    // 
+    @wire(getRecord, { recordId: '$recordId', fields: fields }) contact;
+     
     get name() {
         console.log("GET NAME");
         return getFieldValue(this.contact.data, NAME_FIELD);

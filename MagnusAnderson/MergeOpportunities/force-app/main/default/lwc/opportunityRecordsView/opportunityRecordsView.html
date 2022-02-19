@@ -1,0 +1,56 @@
+<template>
+    <lightning-card title="Testing Check Box Group" icon-name="custom:custom14">
+    <p>Account: {name} &nbsp; ({recordId}) </p>
+    <div class="slds-var-m-top_small slds-var-m-bottom_medium">
+        <!-- Merge -->
+        <lightning-button label="Merge" title="merge" onclick={handleMergeClick} class="slds-var-m-left_x-small"></lightning-button>
+    </div>    
+
+    <div class="slds-var-m-vertical_medium">
+        <!-- <p> <span class="slds-text-heading_small">Checked Opportunities:</span></p> -->
+        <template for:each={checked_opportunites_ids} for:item="opportunity">
+            <li key={opportunity.Id}>
+                {opportunity.Id}
+                <!-- <template for:each={account.Opportunities} for:item="opportunity">
+                    <li key={opportunity.Id}>
+                        {opportunity.Id}, {opportunity.AccountId}: {opportunity.Name}
+                    </li>
+                </template> -->
+            </li>
+        </template>
+    </div>
+    <template for:each={options} for:item="option">
+        <li key={option.value}>{option.label}</li>
+    </template>
+    <div>Options: {options}</div>
+   <template if:true={options}>  
+        <lightning-checkbox-group 
+            class="slds-box opportunity-options"
+            name="Opportunities" 
+            label="Opportunites"
+            options={options}
+            value={checked_opportunites}
+            onchange={handleCheckboxChange}>
+        </lightning-checkbox-group>
+   </template>
+   <p>Selected Values are: {selectedValues}</p>
+    <!-- <template if:true={accounts}>
+    <lightning-card title="Testing Check Box Group" icon-name="custom:custom14">
+        <fieldset class="slds-form-element slds-box">
+            <legend class="slds-form-element__legend slds-form-element__label">Accounts</legend>
+            <div class="slds-form-element__control">
+                <template for:each={accounts} for:item="account">
+                    <div key={account.Id} class="slds-checkbox">
+                    <input type="checkbox" name="opportunities" id={account.Id} value={account.Id} />
+                    <label class="slds-checkbox__label" for={account.Id}>
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label">{account.Name}</span>
+                    </label>
+                    </div>
+                </template>
+            </div>
+        </fieldset>
+   </lightning-card>
+   </template> -->
+</lightning-card>
+</template>
