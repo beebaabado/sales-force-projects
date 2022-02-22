@@ -19,14 +19,15 @@ export default class OpportunityRecordsView extends LightningElement {
     AccountOpportunities ({error, data}) {
         if (data) {
             this.account = data[0];
-            console.log("data: ", data[0]);
-            console.log("OPPORTUNITIES:", this.account);
-            this.options=[];
+            console.log("WIRED::data: ", data[0]);
+            console.log("WIRED::OPPORTUNITIES:", this.account);
+            this.options = [];
             this.opportunities = this.account.Opportunities;
             this.opportunities.forEach(opportunity => {
-                console.log("OPPORTUNITY: ", opportunity);
+                //console.log("WIRED::OPPORTUNITY: ", opportunity);
                 this.options.push({label: opportunity.Name, value: opportunity.Id})  //where is indexOF issue!!!!!!
             });
+            this.checked_opportunities= [this.options[0].value];
             console.log("WIRED::OPTIONS: ", this.options)
             this.error = undefined;  
         } else {
@@ -43,14 +44,16 @@ export default class OpportunityRecordsView extends LightningElement {
     }
 
     // get options() {
-    //     console.log("GET OPTIONS: entering...")
-    //     console.log("get options::OPTIONS: ", this?.options);
-    //     return this?.options;
+    //     console.log("GET OPTIONS...")
+    //     const options = this?.options_list;
+    //     console.log("get options::OPTIONS: ", this?.options_list, " :: ", options);
+    //     return options;
     // }
     
     get selectedValues() {
-        console.log("GET selected values: entering");
-        console.log("GET selected values: ", this.checked_opportunities);
+        console.log("SELECTED GET selected values: ", this.checked_opportunities);
+        //const checkedItemsAsString = this.checked_opportunities.join(',');
+        //console.log("SELECTED items as string: ", checkedItemsAsString);
         return this.checked_opportunities.join(',');
     }
 

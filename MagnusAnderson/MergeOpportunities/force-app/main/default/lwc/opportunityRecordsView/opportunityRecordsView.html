@@ -1,6 +1,6 @@
 <template>
     <lightning-card title="Testing Check Box Group" icon-name="custom:custom14">
-    <p>Account: {name} &nbsp; ({recordId}) </p>
+    <p>Account: {name} :: {recordId} </p>
     <div class="slds-var-m-top_small slds-var-m-bottom_medium">
         <!-- Merge -->
         <lightning-button label="Merge" title="merge" onclick={handleMergeClick} class="slds-var-m-left_x-small"></lightning-button>
@@ -8,6 +8,7 @@
 
     <div class="slds-var-m-vertical_medium">
         <!-- <p> <span class="slds-text-heading_small">Checked Opportunities:</span></p> -->
+        <ul>
         <template for:each={checked_opportunites_ids} for:item="opportunity">
             <li key={opportunity.Id}>
                 {opportunity.Id}
@@ -18,19 +19,17 @@
                 </template> -->
             </li>
         </template>
+        </ul>
     </div>
-    <template for:each={options} for:item="option">
-        <li key={option.value}>{option.label}</li>
-    </template>
-    <div>Options: {options}</div>
    <template if:true={options}>  
         <lightning-checkbox-group 
-            class="slds-box opportunity-options"
+            class="opportunity-options"
             name="Opportunities" 
             label="Opportunites"
             options={options}
-            value={checked_opportunites}
-            onchange={handleCheckboxChange}>
+            value={checked_opportunities}
+            onchange={handleCheckboxChange}
+            required>
         </lightning-checkbox-group>
    </template>
    <p>Selected Values are: {selectedValues}</p>
