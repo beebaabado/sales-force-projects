@@ -2,7 +2,7 @@ import { LightningElement, api, wire, track} from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';  //one record at a time no UI layout
 import Id from '@salesforce/user/Id';
 import NAME_FIELD from '@salesforce/schema/User.Name';
-//import FIELD_NAME from '@salesforce/schema/object.field';  WHAT IS FIELD NAME FOR OPPORTUNITIES?
+//import FIELD_NAME from '@salesforce/schema/object.field';  WHAT IS FIELD NAME FOR checked_opportunities?
 import getOpportunities from '@salesforce/apex/FetchOpportunities.query';   // my class,  sql statement to retrieve account/opportunities info 
 import mergeOpportunities from '@salesforce/apex/MergeOpportunities.opmerge';
 const fields = [NAME_FIELD] 
@@ -12,9 +12,11 @@ export default class OpportunityRecordsView extends LightningElement {
     account;
     opportunities;
     options;
-    checked_opportunities = [];
+    checked_opportunities = [];  // Note:  track not needed for primitive types like numbers, booleans, strings I think for reactive fields (shallow fashion)
+                                // But for {} and [] use @track, deeply tracks mutations made to field.  
     checked_opportunities_ids = [];
-    
+    merged_opportunity = [];
+
     @wire(getOpportunities, {recordId: '$recordId'})
     AccountOpportunities ({error, data}) {
         if (data) {
@@ -25,9 +27,9 @@ export default class OpportunityRecordsView extends LightningElement {
             this.opportunities = this.account.Opportunities;
             this.opportunities.forEach(opportunity => {
                 //console.log("WIRED::OPPORTUNITY: ", opportunity);
-                this.options.push({label: opportunity.Name, value: opportunity.Id})  //where is indexOF issue!!!!!!
+                this.options.push({label: opportunity.Name, value: opportunity.Id})  
             });
-            this.checked_opportunities= [this.options[0].value];
+            //this.checked_opportunities= [this.options[0].value];
             console.log("WIRED::OPTIONS: ", this.options)
             this.error = undefined;  
         } else {
@@ -60,36 +62,28 @@ export default class OpportunityRecordsView extends LightningElement {
     // click event for merge button
     handleMergeClick(event) {
         console.log ("click merge button handler...");
-        //const checkboxes = document.querySelectorAll("input[name='opportunities']");
-        const checkboxes = document.querySelectorAll(".opportunity-options");
-        console.log("CHECKBOXES: ", checkboxes);
-        for (let i = 0; i < checkboxes.length; i++) {
-            
-            this.checked_opportunities_ids.push({
-                sObjectType: 'String', // change to Opportunities object instead
-                Id: checkboxes[i].value});
-            console.log("CB VALUE: ", checkboxes[i])
-        }
-        alert(this.checked_opportunites.join(', '));
 
-        mergeOpportunities({ opportunityIdsList: this.checked_opportunties_ids })   //NEXT TEST PASSING IN RECORD ID? 
+        mergeOpportunities({ recordId: this.account.Id, opportunityIdsList: this.checked_opportunities}) //NEXT TEST PASSING IN RECORD ID? 
         .then(result => { 
-            console.log("mergeOpportunies as string: ", result)
+            console.log("mergeOpportunies: ", result)
+            this.merged_opportunity = result;
             })
             .catch(error => {
-            this.checked_opportunities_ids = undefined;
-            this.error = error;
+                console.log("mergOpportunites...error: ", error);
+                //this.checked_opportunities = undefined;
+                this.error = error;
             });
-
-        console.log("Selected opportunities: ", this.checked_opportunities_id);
+        console.log("handleMergeClick::Selected opportunities: ", this.checked_opportunities);
     }
 
     // change event for group checkbox
     handleCheckboxChange(event) {
         console.log("CheckboxChangeEVENT!");
         console.log("Value: ", event.detail.value);
-        this.checked_opportunites = event.detail.value;
-        alert(`handleChange:  ${this.checked_opportunites.join(', ')}`);
+       // const selOptions = [...event.detail.value];
+        this.checked_opportunities = event.detail.value; //selOptions;
+        //alert(`handleChange:  ${this.checked_opportunities.join(', ')}`);
+        console.log("checkboxchange: Checked opportunities: ", this.checked_opportunities.join(', '));
     }
 
 }
